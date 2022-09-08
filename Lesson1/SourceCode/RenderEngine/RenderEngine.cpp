@@ -1,4 +1,5 @@
 #include <bx/math.h>
+#include <bx/timer.h>
 
 #include "RenderEngine.h"
 
@@ -101,6 +102,12 @@ void CRenderEngine::Update()
 	bx::mtxProj(proj, 60.0f, float(m_Width) / float(m_Height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
 	bgfx::setViewTransform(0, view, proj);
 
+	static auto time_offset = bx::getHPCounter();
+	auto time = (bx::getHPCounter() - time_offset) / static_cast<float>(bx::getHPFrequency());
+
+	float model_matrix[16];
+	bx::mtxRotateZ(model_matrix, time);
+	bgfx::setTransform(model_matrix);
 	bgfx::setVertexBuffer(0, m_defaultCube->GetVertexBuffer());
 	bgfx::setIndexBuffer(m_defaultCube->GetIndexBuffer());
 
