@@ -1,4 +1,5 @@
 #include <bx/math.h>
+#include <bx/timer.h>
 
 #include "RenderEngine.h"
 
@@ -34,6 +35,7 @@ CRenderEngine::CRenderEngine(HINSTANCE hInstance)
 	bgfx::setViewRect(0, 0, 0, bgfx::BackbufferRatio::Equal);
 
 	m_defaultCube = new Cube();
+	m_defaultSandglass = new Sandglass();
 }
 
 CRenderEngine::~CRenderEngine()
@@ -101,10 +103,16 @@ void CRenderEngine::Update()
 	bx::mtxProj(proj, 60.0f, float(m_Width) / float(m_Height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
 	bgfx::setViewTransform(0, view, proj);
 
-	bgfx::setVertexBuffer(0, m_defaultCube->GetVertexBuffer());
-	bgfx::setIndexBuffer(m_defaultCube->GetIndexBuffer());
+	static auto time_offset = bx::getHPCounter();
+	auto time = (bx::getHPCounter() - time_offset) / static_cast<float>(bx::getHPFrequency());
 
-	bgfx::submit(0, m_defaultCube->GetProgramHandle());
+	float model_matrix[16];
+	bx::mtxRotateXYZ(model_matrix, time, 0, time);
+	bgfx::setTransform(model_matrix);
+	bgfx::setVertexBuffer(0, m_defaultSandglass->GetVertexBuffer());
+	bgfx::setIndexBuffer(m_defaultSandglass->GetIndexBuffer());
+
+	bgfx::submit(0, m_defaultSandglass->GetProgramHandle());
 
 	bgfx::touch(0);
 

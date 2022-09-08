@@ -223,10 +223,12 @@
     <ClInclude Include="DefaultGeometry\Cube.h" />
     <ClInclude Include="RenderEngine.h" />
     <ClInclude Include="RenderObject.h" />
+    <ClInclude Include="DefaultGeometry\Sandglass.h" />
     <ClInclude Include="Shaders\ShadersHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DefaultGeometry\Cube.cpp" />
+    <ClCompile Include="DefaultGeometry\Sandglass.cpp" />
     <ClCompile Include="RenderEngine.cpp" />
     <ClCompile Include="RenderObject.cpp" />
   </ItemGroup>
