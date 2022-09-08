@@ -35,6 +35,7 @@ CRenderEngine::CRenderEngine(HINSTANCE hInstance)
 	bgfx::setViewRect(0, 0, 0, bgfx::BackbufferRatio::Equal);
 
 	m_defaultCube = new Cube();
+	m_defaultSandglass = new Sandglass();
 }
 
 CRenderEngine::~CRenderEngine()
@@ -106,12 +107,12 @@ void CRenderEngine::Update()
 	auto time = (bx::getHPCounter() - time_offset) / static_cast<float>(bx::getHPFrequency());
 
 	float model_matrix[16];
-	bx::mtxRotateZ(model_matrix, time);
+	bx::mtxRotateXYZ(model_matrix, time, 0, time);
 	bgfx::setTransform(model_matrix);
-	bgfx::setVertexBuffer(0, m_defaultCube->GetVertexBuffer());
-	bgfx::setIndexBuffer(m_defaultCube->GetIndexBuffer());
+	bgfx::setVertexBuffer(0, m_defaultSandglass->GetVertexBuffer());
+	bgfx::setIndexBuffer(m_defaultSandglass->GetIndexBuffer());
 
-	bgfx::submit(0, m_defaultCube->GetProgramHandle());
+	bgfx::submit(0, m_defaultSandglass->GetProgramHandle());
 
 	bgfx::touch(0);
 
