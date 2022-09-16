@@ -11,6 +11,7 @@
 #include "RenderThread.h"
 #include "CubeGameObject.h"
 #include "GameTimer.h"
+#include "GameControl.h"
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -24,6 +25,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #endif
 
     GameTimer timer;
+    GameControl control;
 
     RenderEngine* renderEngine = new RenderEngine(hInstance);
     RenderThread* renderThread = renderEngine->GetRT();
@@ -46,10 +48,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            float t = 0;
-            timer.Tick();
-            t = sin(timer.TotalTime())*2;
-            cube->SetPosition(t, 0.0f, 0.0f);
+            //float t = 0;
+            //timer.Tick();
+            //t = sin(timer.TotalTime())*2;
+            //cube->SetPosition(t, 0.0f, 0.0f);
+            auto action = control.Control();
+            control.ControlObject(action, *cube);
 
             renderThread->OnEndFrame();
         }

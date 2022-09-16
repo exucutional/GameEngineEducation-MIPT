@@ -144,8 +144,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\SDKs\bgfx\lib\x64;$(SolutionDir)..\Bin\$(Configuration)$(Platform)\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies);RenderEngine.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\SDKs\inih\lib\x64\$(Configuration);$(SolutionDir)..\..\SDKs\bgfx\lib\x64;$(SolutionDir)..\Bin\$(Configuration)$(Platform)\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);RenderEngine.lib;bgfxDebug.lib;bimg_decodeDebug.lib;bimgDebug.lib;bxDebug.lib;INIReader.obj;inih.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,12 +172,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CubeGameObject.h" />
+    <ClInclude Include="GameControl.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CubeGameObject.cpp" />
+    <ClCompile Include="GameControl.cpp" />
     <ClCompile Include="GameEngine.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
