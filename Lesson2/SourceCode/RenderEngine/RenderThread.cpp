@@ -59,7 +59,7 @@ void RenderThread::EnqueueCommand(ERenderCommand command, Args... args)
 		m_commands[m_nFrameToFill].push_back(
 			new EnqueuedRenderCommand(
 				[this](RenderProxy* renderProxy) { m_pRenderEngine->CreateCubeRenderObject(renderProxy); },
-				std::forward<Args>(args)...)
+				args...)
 		);
 		break;
 	default:
