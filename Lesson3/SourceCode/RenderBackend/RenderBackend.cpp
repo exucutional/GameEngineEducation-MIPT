@@ -42,8 +42,8 @@ IRenderData* RenderBackend::CreateRenderObject(
 
 void RenderBackend::SetViewTransform()
 {
-	const bx::Vec3 at = { 0.0f, 0.0f,  0.0f };
-	const bx::Vec3 eye = { 0.0f, 10.0f, -5.0f };
+	const bx::Vec3 at = { 0.0f, 2.0f, 10.0f };
+	const bx::Vec3 eye = { 0.0f, 20.0f, -20.0f };
 	float view[16];
 	bx::mtxLookAt(view, eye, at);
 	float proj[16];
