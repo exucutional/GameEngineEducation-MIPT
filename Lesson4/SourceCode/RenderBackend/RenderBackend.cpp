@@ -61,7 +61,8 @@ void RenderBackend::Draw(IRenderData* renderObject)
 	float translate[3] = {0.0f, 0.0f, 0.0f};
 	renderObject->GetPosition(translate);
 
-	bx::mtxTranslate(mtx, translate[0], translate[1], translate[2]);
+	float scale = renderObject->GetScale();
+	bx::mtxSRT(mtx, scale, scale, scale, 0, 0, 0, translate[0], translate[1], translate[2]);
 	bgfx::setTransform(mtx);
 
 	BgfxRenderData* renderData = reinterpret_cast<BgfxRenderData*>(renderObject);
