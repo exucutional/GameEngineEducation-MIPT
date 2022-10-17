@@ -15,6 +15,13 @@ public:
 	}
 	void SetPosition(float position[3]);
 
+	float GetScale() const;
+	bool IsRenderable() const;
+	void SetScale(float value);
+	void SetRenderable(bool value);
+
 	float m_vPosition[3];
+	float m_scale;
+	bool m_isRenderable;
 };
 

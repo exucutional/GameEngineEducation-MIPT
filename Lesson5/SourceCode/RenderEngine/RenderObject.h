@@ -21,7 +21,11 @@ public:
 
 	void GetPosition(float* result) { m_pRenderProxy->GetPosition(result); }
 	IRenderData* GetRenderData() const { return m_pRenderData; }
+	bool IsRenderable() const { return m_pRenderProxy->IsRenderable(); }
+	float GetScale() const { return m_pRenderProxy->GetScale(); }
 	void SetRenderData(IRenderData* renderData) { m_pRenderData = renderData; }
+	void SetRenderable(bool value) { m_pRenderProxy->SetRenderable(value); }
+	void SetScale(bool value) { m_pRenderProxy->SetScale(value); }
 
 protected:
 	RenderProxy* m_pRenderProxy;
