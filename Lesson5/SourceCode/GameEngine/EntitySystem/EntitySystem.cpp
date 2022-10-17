@@ -3,8 +3,9 @@
 #include "ecsMesh.h"
 #include "ecsControl.h"
 #include "ecsPhys.h"
+#include "ecsScript.h"
 
-EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler):
+EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler, IScriptSystem* scriptSystem):
     creatableMaxCount(30)
 {
     ecs.entity("inputHandler")
@@ -12,6 +13,8 @@ EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandle
     ecs.entity("renderEngine")
         .set(RenderEnginePtr{ renderEngine })
         .set(CubeMeshes{});
+    ecs.entity("scriptSystem")
+        .set(ScriptSystemPtr{ scriptSystem });
 
     auto projectile = ecs.prefab()
         .set_override(Position{ 0.0f, 0.0f, 0.0f })
@@ -28,6 +31,7 @@ EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandle
     register_ecs_mesh_systems(ecs);
     register_ecs_control_systems(ecs);
     register_ecs_phys_systems(ecs);
+    register_ecs_script_systems(ecs);
 
     for (int i = 0; i < creatableMaxCount; i++)
         ecs.entity().add<Creatable>();
@@ -35,15 +39,15 @@ EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandle
     auto cubeControl = ecs.entity()
         .set(Position{ 0.f, 0.f, 0.f })
         .set(Velocity{ 0.f, 0.f, 0.f })
-        .set(Speed{ 10.f })
         .set(FrictionAmount{ 2.0f })
-        .set(JumpSpeed{ 10.f })
         .set(Gravity{ 0.f, -9.8065f, 0.f })
         .set(BouncePlane{ 0.f, 1.f, 0.f, 0.f })
         .set(Bounciness{ 0.3f })
         .set(Shootable{ projectile, 3 })
         .set(ReloadTimer{ 3, 2.0f })
-        .add<Controllable>()
+        .set(Scripts(
+            "../../../Assets/Scripts/control-movement.lua",
+            "../../../Assets/Scripts/control-shoot.lua"))
         .add<CubeMesh>();
 
     auto cubeEnemy = ecs.prefab()

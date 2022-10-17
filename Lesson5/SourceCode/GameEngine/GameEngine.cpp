@@ -12,6 +12,7 @@
 #include "GameTimer.h"
 #include "InputHandler.h"
 #include "EntitySystem/EntitySystem.h"
+#include "../ScriptSystem/ScriptSystem.h"
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -29,8 +30,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     RenderEngine* renderEngine = new RenderEngine(hInstance);
     RenderThread* renderThread = renderEngine->GetRT();
     InputHandler* inputHandler = new InputHandler();
+    IScriptSystem* scriptSystem = new CScriptSystem();
 
-    EntitySystem* entitySystem = new EntitySystem(renderEngine, inputHandler);
+    EntitySystem* entitySystem = new EntitySystem(renderEngine, inputHandler, scriptSystem);
 
     MSG msg = { 0 };
 
@@ -49,6 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         {
             inputHandler->Update();
             entitySystem->Update();
+            scriptSystem->Update(timer.DeltaTime());
 
             timer.Tick();
 

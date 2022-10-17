@@ -5,7 +5,7 @@ struct Controllable {};
 
 struct JumpSpeed { float val; };
 
-struct Shootable { flecs::entity projectile; int mag; };
+struct Shootable { flecs::entity projectile; int mag; bool shootPressed = false; };
 
 struct MagBonus { int val; };
 

@@ -2,12 +2,11 @@
 #include <memory>
 #include "Common.h"
 
-class IScriptProxy;
+class CScriptProxy;
 
 class SCRIPTSYSTEM_API IScriptSystem
 {
 public:
-	virtual void Update() = 0;
-	virtual std::unique_ptr<IScriptProxy> CreateProxy(const char* filename) = 0;
-	virtual void ProcessScript(IScriptProxy* scriptProxy) = 0;
+	virtual void Update(float dt) = 0;
+	virtual std::shared_ptr<CScriptProxy> CreateProxy(const char* filename) = 0;
 };

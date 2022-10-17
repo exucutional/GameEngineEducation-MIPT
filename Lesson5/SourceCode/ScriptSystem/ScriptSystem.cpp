@@ -6,18 +6,16 @@ CScriptSystem::CScriptSystem()
     return;
 }
 
-void CScriptSystem::Update()
+void CScriptSystem::Update(float dt)
 {
-    ;
+    for (auto& script : m_scripts)
+    {
+        script->BindValue("delta_time", dt);
+        script->Execute();
+    }
 }
 
-std::unique_ptr<IScriptProxy> CScriptSystem::CreateProxy(const char* filename)
+std::shared_ptr<CScriptProxy> CScriptSystem::CreateProxy(const char* filename)
 {
-
-    return std::make_unique<CScriptProxy>();
-}
-
-void CScriptSystem::ProcessScript(IScriptProxy* scriptProxy)
-{
-    ;
+    return m_scripts.emplace_back(std::make_unique<CScriptProxy>(filename));
 }
