@@ -13,6 +13,7 @@ public:
 	EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler, IScriptSystem* scriptSystem);
 
 	void Update();
+	void CreateEntities();
 private:
 	int creatableMaxCount;
 	flecs::world ecs;

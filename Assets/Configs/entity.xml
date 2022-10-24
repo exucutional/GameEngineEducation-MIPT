@@ -1,0 +1,15 @@
+<entities>
+	<entity>
+		<position>0.0 0.0 0.0</position>
+		<velocity>0.0 0.0 0.0></velocity>
+		<friction>2.0</friction>
+		<gravity>0.0 -9.8065 0.0</gravity>
+		<bounce_plane>0.0 1.0 0.0 0.0</bounce_plane>
+		<bounciness>0.3</bounciness>
+		<shootable>3.0</shootable>
+		<reload_timer>3.0 2.0</reload_timer>
+		<script>../../../Assets/Scripts/control-movement.lua</script>
+		<script>../../../Assets/Scripts/control-shoot.lua</script>
+		<cube_mesh/>
+	</entity>
+</entities>

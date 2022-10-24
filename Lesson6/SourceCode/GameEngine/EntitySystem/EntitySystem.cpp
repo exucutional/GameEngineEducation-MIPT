@@ -4,6 +4,8 @@
 #include "ecsControl.h"
 #include "ecsPhys.h"
 #include "ecsScript.h"
+#include "DataReader.h"
+#include <functional>
 
 EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler, IScriptSystem* scriptSystem):
     creatableMaxCount(30)
@@ -36,19 +38,7 @@ EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandle
     for (int i = 0; i < creatableMaxCount; i++)
         ecs.entity().add<Creatable>();
 
-    auto cubeControl = ecs.entity()
-        .set(Position{ 0.f, 0.f, 0.f })
-        .set(Velocity{ 0.f, 0.f, 0.f })
-        .set(FrictionAmount{ 2.0f })
-        .set(Gravity{ 0.f, -9.8065f, 0.f })
-        .set(BouncePlane{ 0.f, 1.f, 0.f, 0.f })
-        .set(Bounciness{ 0.3f })
-        .set(Shootable{ projectile, 3 })
-        .set(ReloadTimer{ 3, 2.0f })
-        .set(Scripts(
-            "../../../Assets/Scripts/control-movement.lua",
-            "../../../Assets/Scripts/control-shoot.lua"))
-        .add<CubeMesh>();
+    CreateEntities();
 
     auto cubeEnemy = ecs.prefab()
         .set_override(Position{ 0.f, 0.f, 0.f })
@@ -80,4 +70,78 @@ void EntitySystem::Update()
     creatableQuery.each([&](Creatable&) { creatableCount += 1; });
     for (int i = creatableCount; i < creatableMaxCount; i++)
         ecs.entity().add<Creatable>();
+}
+
+void EntitySystem::CreateEntities()
+{
+    auto projectile = ecs.prefab()
+        .set_override(Position{ 0.0f, 0.0f, 0.0f })
+        .set_override(Velocity{ 0.0f, 0.0f, 0.0f })
+        .set(BoundingBox{ 0.25f, 0.25f, 0.25f })
+        .set(Scale{ 0.25f })
+        .set(Bounciness{ 0.8f })
+        .set(BouncePlane{ 0.f, 1.f, 0.f, -5.0f })
+        .set(Gravity{ 0.f, -9.8065f, 0.f })
+        .set(FrictionAmount{ 0.7f })
+        .set(DestroyPlane{ 0.f, 1.f, 0.f, -5.0f, 5.0f })
+        .add<Projectile>();
+    std::unordered_map<std::string, std::function<void(flecs::entity, std::string)>> entityMap = {
+        {"position", [](flecs::entity e, const std::string& params) {
+            auto xyz = DataReader::StringToVec<3>(params);
+            e.set(Position{ xyz[0], xyz[1], xyz[2] });
+        }},
+        {"velocity", [](flecs::entity e, const std::string& params) {
+            auto xyz = DataReader::StringToVec<3>(params);
+            e.set(Velocity{ xyz[0], xyz[1], xyz[2] });
+        }},
+        {"friction", [](flecs::entity e, const std::string& params) {
+            auto value = std::stof(params);
+            e.set(FrictionAmount{ value });
+        }},
+        {"gravity", [](flecs::entity e, const std::string& params) {
+            auto xyz = DataReader::StringToVec<3>(params);
+            e.set(Gravity{ xyz[0], xyz[1], xyz[2] });
+        }},
+        {"bounce_plane", [](flecs::entity e, const std::string& params) {
+            auto xyzw = DataReader::StringToVec<4>(params);
+            e.set(BouncePlane{ xyzw[0], xyzw[1], xyzw[2], xyzw[3] });
+        }},
+        {"bounciness", [](flecs::entity e, const std::string& params) {
+            auto value = std::stof(params);
+            e.set(Bounciness{ value });
+        }},
+        {"shootable", [projectile](flecs::entity e, const std::string& params) {
+            auto value = std::stof(params);
+            e.set(Shootable{ projectile, (int)value });
+        }},
+        {"reload_timer", [](flecs::entity e, const std::string& params) {
+            auto xy = DataReader::StringToVec<2>(params);
+            e.set(ReloadTimer{ (int)xy[0], xy[1] });
+        }},
+        {"script", [](flecs::entity e, const std::string& params) {
+            auto scripts = e.get<Scripts>();
+            if (scripts)
+            {
+                std::vector<std::string> names(scripts->names);
+                names.push_back(params);
+                e.set(Scripts{ names });
+            }
+            else
+            {
+                e.set(Scripts{ params });
+            }
+        }},
+        {"cube_mesh", [](flecs::entity e, const std::string& params) {
+            e.add<CubeMesh>();
+        }},
+    };
+    auto reader = DataReader();
+    reader.LoadXMLFile("../../../Assets/Configs/entity.xml");
+    auto entities = reader.GetEntities();
+    for (auto& entity : entities)
+    {
+        auto e = ecs.entity();
+        for (auto& component : entity)
+            entityMap[component.first](e, component.second);
+    }
 }
