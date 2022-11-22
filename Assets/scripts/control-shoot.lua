@@ -14,6 +14,7 @@ if input_state:test(eIC_Shoot) and shoot.mag > 0 then
 		bullet:addCubeMesh()
 		shoot.shoot_pressed = true
 		shoot.mag = shoot.mag - 1
+		entity:playSound("sound-shoot")
 	end
 else
 	shoot.shoot_pressed = false
