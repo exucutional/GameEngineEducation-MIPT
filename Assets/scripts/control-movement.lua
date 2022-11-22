@@ -26,6 +26,7 @@ end
 if input_state:test(eIC_Jump) then
 	if plane.x * position.x + plane.y * position.y + plane.z * position.z < plane.w + plane_epsilon then
 		velocity.y = jump_speed
+		entity:playSound("sound-jump")
 	end
 end
 

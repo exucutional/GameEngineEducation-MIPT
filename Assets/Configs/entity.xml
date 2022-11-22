@@ -11,5 +11,6 @@
 		<script>../../../Assets/Scripts/control-movement.lua</script>
 		<script>../../../Assets/Scripts/control-shoot.lua</script>
 		<cube_mesh/>
+		<sound_proxy/>
 	</entity>
 </entities>

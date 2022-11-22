@@ -10,3 +10,9 @@
 [submodule "SDKs/sol2"]
 	path = SDKs/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "SDKs/openal-soft"]
+	path = SDKs/openal-soft
+	url = https://github.com/kcat/openal-soft.git
+[submodule "SDKs/libsndfile"]
+	path = SDKs/libsndfile
+	url = https://github.com/libsndfile/libsndfile.git
