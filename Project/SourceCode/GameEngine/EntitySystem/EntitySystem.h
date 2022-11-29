@@ -11,7 +11,7 @@ class EntitySystem
 {
 public:
 	EntitySystem() = delete;
-	EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler, IScriptSystem* scriptSystem, SoundSystem* soundSystem);
+	EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler, IScriptSystem* scriptSystem, ISoundSystem* soundSystem);
 
 	void Update();
 	void CreateEntities();

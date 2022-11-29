@@ -32,7 +32,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     RenderThread* renderThread = renderEngine->GetRT();
     InputHandler* inputHandler = new InputHandler();
     IScriptSystem* scriptSystem = new CScriptSystem();
-    SoundSystem* soundSystem = new SoundSystem();
+    ISoundSystem* soundSystem = new SoundSystem();
     LoadAudio(soundSystem);
     auto backgroundSound = soundSystem->CreateProxy();
     backgroundSound->PlaySound("sound-background");
@@ -65,12 +65,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
     }
 
+    delete renderEngine;
+    delete inputHandler;
+    delete scriptSystem;
+    delete soundSystem;
     return (int) msg.wParam;
 }
 
-void LoadAudio(SoundSystem* system)
+void LoadAudio(ISoundSystem* system)
 {
-    system->LoadFile("../../../Assets/Audio/laser6.wav", "sound-shoot");
-    system->LoadFile("../../../Assets/Audio/mixkit-game-level-music-689.wav", "sound-background");
-    system->LoadFile("../../../Assets/Audio/mixkit-quick-jump-arcade-game-239.wav", "sound-jump");
+    system->LoadSound("../../../Assets/Audio/laser6.wav", "sound-shoot");
+    system->LoadSound("../../../Assets/Audio/mixkit-game-level-music-689.wav", "sound-background");
+    system->LoadSound("../../../Assets/Audio/mixkit-quick-jump-arcade-game-239.wav", "sound-jump");
 }

@@ -6,7 +6,7 @@
 
 SoundProxy::SoundProxy(SoundProxy&& proxy) noexcept :
     system_(std::move(proxy.system_)),
-    sources_(std::move(proxy.sources_))
+    sounds_(std::move(proxy.sounds_))
 {
     position_[0] = proxy.position_[0];
     position_[1] = proxy.position_[1];
@@ -25,7 +25,7 @@ SoundProxy& SoundProxy::operator=(SoundProxy&& proxy) noexcept
     velocity_[1] = proxy.velocity_[1];
     velocity_[2] = proxy.velocity_[2];
     system_ = std::move(proxy.system_);
-    sources_ = std::move(proxy.sources_);
+    sounds_ = std::move(proxy.sounds_);
     return *this;
 }
 
@@ -34,8 +34,8 @@ void SoundProxy::SetPosition(float px, float py, float pz)
     position_[0] = px;
     position_[1] = py;
     position_[2] = pz;
-    for (auto& source : sources_)
-        alSource3f(source.second, AL_POSITION, px, py, pz);
+    for (auto& sound : sounds_)
+        alSource3f(sound.second.source, AL_POSITION, px, py, pz);
 
     assert(alGetError() == AL_NO_ERROR);
 }
@@ -45,8 +45,8 @@ void SoundProxy::SetVelocity(float vx, float vy, float vz)
     velocity_[0] = vx;
     velocity_[1] = vy;
     velocity_[2] = vz;
-    for (auto& source : sources_)
-        alSource3f(source.second, AL_VELOCITY, vx, vy, vz);
+    for (auto& sound : sounds_)
+        alSource3f(sound.second.source, AL_VELOCITY, vx, vy, vz);
 
     assert(alGetError() == AL_NO_ERROR);
 }
@@ -61,43 +61,45 @@ std::array<float, 3> SoundProxy::GetVelocity() const
     return { velocity_[0], velocity_[1], velocity_[2] };
 }
 
-void SoundProxy::PlaySound(const std::string& soundName)
+void SoundProxy::PlaySound(const std::string& soundName, float duration)
 {
-    if (sources_.find(soundName) == std::end(sources_))
+    if (sounds_.find(soundName) == std::end(sounds_))
     {
         auto buffer = system_->GetSoundBuffer(soundName);
         ALuint source = 0;
         alGenSources(1, &source);
         alSourcei(source, AL_BUFFER, buffer);
-        sources_[soundName] = source;
+        sounds_[soundName] = { duration, 0.0f, source };
     }
 
-    auto source = sources_[soundName];
-    alSource3f(source, AL_POSITION, position_[0], position_[1], position_[2]);
-    alSource3f(source, AL_VELOCITY, velocity_[0], velocity_[1], velocity_[2]);
-    alSourcePlay(source);
+    auto sound = sounds_[soundName];
+    sound.duration = duration;
+    sound.time = 0.0f;
+    alSource3f(sound.source, AL_POSITION, position_[0], position_[1], position_[2]);
+    alSource3f(sound.source, AL_VELOCITY, velocity_[0], velocity_[1], velocity_[2]);
+    alSourcePlay(sound.source);
 
     assert(alGetError() == AL_NO_ERROR);
 }
 
 void SoundProxy::PauseSound(const std::string& soundName)
 {
-    alSourcePause(sources_[soundName]);
+    alSourcePause(sounds_[soundName].source);
 
     assert(alGetError() == AL_NO_ERROR);
 }
 
 void SoundProxy::StopSound(const std::string& soundName)
 {
-    alSourceStop(sources_[soundName]);
+    alSourceStop(sounds_[soundName].source);
 
     assert(alGetError() == AL_NO_ERROR);
 }
 
 void SoundProxy::StopAllSounds()
 {
-    for (auto& source : sources_)
-        alSourceStop(source.second);
+    for (auto& sound : sounds_)
+        alSourceStop(sound.second.source);
 
     assert(alGetError() == AL_NO_ERROR);
 }
@@ -105,8 +107,8 @@ void SoundProxy::StopAllSounds()
 SoundState SoundProxy::GetSoundState(const std::string& soundName) const
 {
     ALint state;
-    auto source = sources_.find(soundName);
-    alGetSourcei(source->second, AL_SOURCE_STATE, &state);
+    auto sound = sounds_.find(soundName);
+    alGetSourcei(sound->second.source, AL_SOURCE_STATE, &state);
 
     assert(alGetError() == AL_NO_ERROR);
 
@@ -127,20 +129,35 @@ SoundState SoundProxy::GetSoundState(const std::string& soundName) const
 
 void SoundProxy::SetSoundLoop(const std::string& soundName, bool loop)
 {
-    alSourcei(sources_[soundName], AL_LOOPING, loop);
+    alSourcei(sounds_[soundName].source, AL_LOOPING, loop);
 
     assert(alGetError() == AL_NO_ERROR);
 }
 
 void SoundProxy::SetSoundGain(const std::string& soundName, float gain)
 {
-    alSourcef(sources_[soundName], AL_GAIN, gain);
+    alSourcef(sounds_[soundName].source, AL_GAIN, gain);
 
     assert(alGetError() == AL_NO_ERROR);
 }
 
+void SoundProxy::Update(float dt)
+{
+    for (auto& sound : sounds_)
+    {
+        ALint state;
+        alGetSourcei(sound.second.source, AL_SOURCE_STATE, &state);
+        if (state != AL_STOPPED && sound.second.duration != 0.0f)
+        {
+            sound.second.time += dt;
+            if (sound.second.time > sound.second.duration)
+                alSourceStop(sound.second.source);
+        }
+    }
+}
+
 SoundProxy::~SoundProxy()
 {
-    for (auto& source : sources_)
-        alDeleteSources(1, &source.second);
+    for (auto& sound : sounds_)
+        alDeleteSources(1, &sound.second.source);
 }

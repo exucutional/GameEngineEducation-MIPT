@@ -19,7 +19,7 @@ SoundSystem::SoundSystem(const char* deviceName)
     assert(alGetError() == AL_NO_ERROR);
 }
 
-void SoundSystem::LoadFile(const std::string& fileName, const std::string& soundName)
+void SoundSystem::LoadSound(const std::string& fileName, const std::string& soundName)
 {
     SF_INFO sfinfo;
     auto sndfile = sf_open(fileName.c_str(), SFM_READ, &sfinfo);
@@ -65,7 +65,17 @@ void SoundSystem::LoadFile(const std::string& fileName, const std::string& sound
     buffers_[soundName] = buffer;
 }
 
-std::unique_ptr<SoundProxy> SoundSystem::CreateProxy()
+void SoundSystem::UnloadSound(const std::string& soundName)
+{
+    auto bufferIter = buffers_.find(soundName);
+    if (bufferIter != std::end(buffers_))
+    {
+        alDeleteBuffers(1, &bufferIter->second);
+        buffers_.erase(bufferIter);
+    }
+}
+
+std::unique_ptr<ISoundProxy> SoundSystem::CreateProxy()
 {
     return std::make_unique<SoundProxy>(this);
 }
@@ -82,6 +92,12 @@ ALuint SoundSystem::GetSoundBuffer(const std::string& soundName) const
 void SoundSystem::SetListenerPosition(float px, float py, float pz)
 {
     alListener3f(AL_POSITION, px, py, pz);
+    assert(alGetError() == AL_NO_ERROR);
+}
+
+void SoundSystem::SetListenerVelocity(float vx, float vy, float vz)
+{
+    alListener3f(AL_VELOCITY, vx, vy, vz);
     assert(alGetError() == AL_NO_ERROR);
 }
 
