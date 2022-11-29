@@ -9,7 +9,11 @@
 #include <functional>
 #include <array>
 
+<<<<<<< HEAD
 EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler, IScriptSystem* scriptSystem, ISoundSystem* soundSystem):
+=======
+EntitySystem::EntitySystem(RenderEngine* renderEngine, InputHandler* inputHandler, IScriptSystem* scriptSystem, SoundSystem* soundSystem):
+>>>>>>> 587b67b690f3376290d53ce9a6470639dba39ec4
     creatableMaxCount(30)
 {
     ecs.entity("inputHandler")

@@ -148,8 +148,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+<<<<<<< HEAD
     <ClInclude Include="ISoundProxy.h" />
     <ClInclude Include="ISoundSystem.h" />
+=======
+>>>>>>> 587b67b690f3376290d53ce9a6470639dba39ec4
     <ClInclude Include="pch.h" />
     <ClInclude Include="SoundProxy.h" />
     <ClInclude Include="SoundSystem.h" />

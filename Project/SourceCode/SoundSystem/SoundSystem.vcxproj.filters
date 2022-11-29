@@ -27,12 +27,15 @@
     <ClInclude Include="SoundProxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="ISoundSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ISoundProxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+=======
+>>>>>>> 587b67b690f3376290d53ce9a6470639dba39ec4
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
