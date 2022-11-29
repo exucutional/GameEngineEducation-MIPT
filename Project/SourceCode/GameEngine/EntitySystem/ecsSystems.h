@@ -19,12 +19,12 @@ struct ScriptSystemPtr
 
 struct SoundSystemPtr
 {
-  class SoundSystem* ptr;
+  class ISoundSystem* ptr;
 };
 
 struct SoundProxyPtr
 {
-  std::unique_ptr<class SoundProxy> ptr;
+  std::unique_ptr<class ISoundProxy> ptr;
 };
 
 struct DestroyTimer { float time; float acc = 0; };

@@ -4,6 +4,6 @@
 // Windows Header Files
 #include <windows.h>
 
-class SoundSystem;
+class ISoundSystem;
 
-void LoadAudio(SoundSystem* soundSystem);
+void LoadAudio(ISoundSystem* soundSystem);
